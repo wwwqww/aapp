@@ -1,0 +1,213 @@
+
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيقك - منصة ترفيهية</title>
+    <link rel="stylesheet" href="css.css">
+    <script src="js.js"></script>
+    <script src="mian.js"></script>
+    <style>
+        /* ... (الكود السابق لملفات CSS) ... */
+    </style>
+    <script>
+        // إضافة وظيفة تغيير اللغة
+        function setLanguage(language) {
+            var elements = document.querySelectorAll('[data-lang]');
+            elements.forEach(function(element) {
+                var key = element.getAttribute('data-lang');
+                element.innerText = translations[language][key];
+            });
+        }
+
+      
+        document.addEventListener("DOMContentLoaded", function() {
+            var userLang = navigator.language || navigator.userLanguage;
+            if (userLang.startsWith("fr")) {
+                setLanguage("fr");
+            } else if (userLang.startsWith("en")) {
+                setLanguage("en");
+            } else {
+                setLanguage("ar");
+            }
+        });
+    </script>
+    <!-- إضافة مكتبات Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9w5vjNMBo9mG1ke0lEadzgGVkB7Ex8-U",
+            authDomain: "command-93e18.firebaseapp.com",
+            projectId: "command-93e18",
+            storageBucket: "command-93e18.appspot.com",
+            messagingSenderId: "1002951082955",
+            appId: "1:1002951082955:web:56fa975330a791c43a2c4e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // عند تحميل الصفحة
+        document.addEventListener("DOMContentLoaded", function() {
+            // استرجاع أحدث 3 تعليقات
+            const commentsQuery = query(collection(db, 'comments'), orderBy('timestamp', 'desc'), limit(3));
+            onSnapshot(commentsQuery, (snapshot) => {
+                const commentsContainer = document.querySelector('.comments .comment-list');
+                commentsContainer.innerHTML = ''; // تفريغ التعليقات القديمة
+                snapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    const commentElement = document.createElement('div');
+                    commentElement.classList.add('comment');
+                    commentElement.innerHTML = `<p><strong>${comment.name}:</strong> ${comment.text}</p>`;
+                    commentsContainer.appendChild(commentElement);
+                });
+            });
+
+            // إرسال تعليق جديد
+            document.querySelector('.comments form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const name = this.querySelector('input[name="name"]').value;
+                const commentText = this.querySelector('textarea').value;
+                if (name.trim() !== "" && commentText.trim() !== "") {
+                    await addDoc(collection(db, 'comments'), {
+                        name: name,
+                        text: commentText,
+                        timestamp: new Date()
+                    });
+                    this.querySelector('input[name="name"]').value = '';
+                    this.querySelector('textarea').value = '';
+                }
+            });
+
+            // إرسال البريد الإلكتروني للاشتراك
+            document.querySelector('.subscribe-form form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                if (email.trim() !== "") {
+                    await addDoc(collection(db, 'subscriptions'), { email });
+                    alert('تم الاشتراك بنجاح!');
+                    this.querySelector('input[type="email"]').value = '';
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 10px; direction: initial;">
+    <div style="display: flex; align-items: center;">
+      <img src="amagamhubhub11111.jpeg" alt="شعار تطبيقك" style="width: 100px;">
+      <h1 data-lang="title" style="margin-left: 10px;">عنوان التطبيق</h1>
+    </div>
+    
+    <div style="display: flex; align-items: center;">
+      <div class="language-selector" style="margin-right: 10px;">
+          <button onclick="toggleLanguages()" style="padding: 5px 10px;">Languages </button>
+          <div id="language-menu" style="display: none; position: absolute; background-color: #fff; border: 1px solid #ccc; padding: 5px; z-index: 1;">
+              <button onclick="setLanguage('ar')">AR</button>
+              <button onclick="setLanguage('fr')">FR</button>
+              <button onclick="setLanguage('en')">EN</button>
+          </div>
+      </div>
+    </div>
+  </header>
+  
+  <script>
+    function toggleLanguages() {
+        var menu = document.getElementById('language-menu');
+        if (menu.style.display === 'block') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'block';
+        }
+    }
+  
+  
+  </script>
+  
+
+<div class="container">
+  <!-- ... (بطاقات التطبيق الأخرى) ... -->
+  <div class="container">
+    <div class="card" style="background-image: url('path/to/background-image.jpg');">
+      
+        <h2 data-lang="intro_title"></h2>
+        <img src="_0f4a50bc-afc8-498d-9b34-f9d89bd69bd5.jpeg" alt="وصف الصورة" style="width:100%; border-radius: 8px; margin-bottom: 20px;">
+        <p data-lang="intro_text"></p>
+  
+              
+            
+        
+        <a class="card-link" href="#card2">التالي</a>
+    </div>
+
+
+    
+    <div class="card" id="card2" style="background-image: url('path/to/another-background-image.jpg');">
+      <h2 data-lang="install_title"></h2>
+      <p data-lang="install_text"> </p>
+      <ul>
+        <ul>
+          <li><a href="#"><img src="path/to/google-play-icon.png" alt="تحميل من Google Play" style="width: 150px;"></a></li>
+          <li><a href="#"><img src="path/to/app-store-icon.png" alt="تحميل من App Store" style="width: 150px;"></a></li>
+      </ul>
+        <a class="card-link" href="#card3">التالي</a>
+    </div>
+
+
+    <div class="card" id="card3" style="background-image: url('path/to/another-background-image.jpg');">
+      <h2 data-lang="company_title"></h2>
+        <p data-lang="company_text"></p>
+      <a class="card-link" href="#card4">التالي</a>
+  </div>
+
+
+  <div class="card" id="card4" style="background-image: url('path/to/another-background-image.jpg');">
+    <h2 data-lang="services_title"></h2>
+        <ul>
+            <li data-lang="service1"></li>
+            <li data-lang="service2"></li>
+            <li data-lang="service3"></li>
+        </ul>
+    <a class="card-link" href="#card5">التالي</a>
+</div>
+
+  <div class="card" id="card5">
+      <h2>التعليقات</h2>
+      <div class="comments">
+          <div class="comment-list"></div>
+          <form>
+              <input type="text" name="name" placeholder="اسمك" required>
+              <textarea placeholder="أضف تعليقك..." required></textarea>
+              <p>  <button type="submit">إرسال</button></p>
+            </form>
+        </div>
+          <a class="card-link" href="#card6">التالي</a>
+        
+  </div>
+
+  <div class="card" id="card6">
+      <h2 data-lang="subscribe_title"></h2>
+      <p data-lang="subscribe_text"></p>
+      <div class="subscribe-form">
+          <form>
+              <input type="email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+              <button type="submit" data-lang="subscribe_button">اشترك</button>
+          </form>
+      </div>
+  </div>
+</div>
+
+<footer>
+  <p data-lang="footer_text"></p>
+</footer>
+</body>
+</html>
